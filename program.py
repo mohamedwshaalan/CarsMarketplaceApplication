@@ -2,6 +2,7 @@ import mysql.connector
 import re
 import os
 from prettytable import PrettyTable
+from mysql.connector.locales.eng import client_error
 
 
 def sqlResulttoPrettyTable(sqlResult):
@@ -39,7 +40,8 @@ mydb = mysql.connector.connect(
  host="db4free.net" ,
  user= "mohamedshaalan",
  password= "dbpassword",
- database= "olxproject"
+ database= "olxproject",
+auth_plugin='mysql_native_password'
 )
 mycursor = mydb.cursor()
 print("Welcome to the OLX Database Project")
