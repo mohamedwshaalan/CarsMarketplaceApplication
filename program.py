@@ -2,7 +2,7 @@ import mysql.connector
 import re
 import os
 from prettytable import PrettyTable
-from mysql.connector.locales.eng import client_error
+
 
 
 def sqlResulttoPrettyTable(sqlResult):
@@ -41,7 +41,6 @@ mydb = mysql.connector.connect(
  user= "mohamedshaalan",
  password= "dbpassword",
  database= "olxproject",
-auth_plugin='mysql_native_password'
 )
 mycursor = mydb.cursor()
 print("Welcome to the OLX Database Project")
