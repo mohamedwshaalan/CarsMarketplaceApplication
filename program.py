@@ -2,44 +2,7 @@ import mysql.connector
 import re
 import os
 from prettytable import PrettyTable
-# Register a user
-# Add a new user sale for an ad
-# INSERT INTO app_user VALUES (userEmail, userName, gender, birthDate);
 
-# View existing reviews of a given ad
-# SELECT review FROM sale WHERE Ad_ID = "";
-
-# View aggregated rating of a seller / owner
-# SELECT Avg(Rating) FROM sale S INNER JOIN ad A ON S.Ad_ID = A.ID INNER JOIN ad_owner AO 
-#	ON AO.Phone_Number = A.Owner_Phone_Number and AO.Full_Name = A.Owner_Name WHERE AO.Phone_Number = "" AND AO.Full_Name = "";
-
-# Show all the ads for a given car make, body type and year in a specific location / area, along with the average price the number of listings for each model
-# SELECT Car_Model, Count(*) as Listings ,AVG(Price) AS AvgModelPrice FROM ad WHERE Car_Brand="MG" AND Car_Year="2021" AND 	Location="Heliopolis" AND Car_Model GROUP BY Car_Model;
-
-# Show all the used cars in a certain location in a given price range, with a given set of features
-# SELECT ad.* FROM ad INNER JOIN extra_features ON ad.ID = extra_features.Ad_ID WHERE ad.Location = 'Heliopolis' AND ad.Price >= '0' AND ad.Price <= '50000000' AND extra_features.Extra_Feature IN ('Air Conditioning') GROUP BY ad.ID HAVING COUNT(DISTINCT extra_features.Extra_Feature) = 1;
-
-# Show the top 5 areas in cairo by amount of inventory and average price a given make / model
-#  	SELECT a.Location, AVG(a.Price) AS average_price, COUNT(*) AS inventory_count FROM ad a WHERE a.Car_Brand = 'MG' AND a.Car_Model = '6' GROUP BY a.Location ORDER BY COUNT(*) DESC;
-
-# Show the top 5 sellers by the amount of listings they have, along with their avg price per year
-# 	SELECT Owner_Name, Owner_Phone_Number, Car_Year, Count(*), AVG(Price) FROM ad  GROUP BY 1, 2, 3  ORDER BY Count(*) DESC; 
-
-# Show all the properties listed by a specific owner (given their first and last name and / or phone no) 
-# SELECT * FROM ad WHERE Owner_Phone_Number='' AND Owner_Name='';
-
-# Show the top 5 make / models cars by the amount of inventory and their average price for a given year range
-# SELECT ad.Car_Brand, ad.Car_Model, COUNT(*) AS inventory_count, AVG(ad.Price) AS average_price FROM ad INNER JOIN cars ON ad.Car_Brand = cars.Car_Brand 
-#        AND ad.Car_Model = cars.Car_Model 
-#        AND ad.Car_Year = cars.Car_Year 
-#WHERE 
-#    ad.Car_Year BETWEEN start_year AND end_year
-#GROUP BY 
-#    ad.Car_Brand, 
-#    ad.Car_Model 
-#ORDER BY 
-#    inventory_count DESC, 
-#    average_price DESC 
 
 def sqlResulttoPrettyTable(sqlResult):
     table = PrettyTable()
@@ -71,10 +34,11 @@ def isDigit(string):
         return True
     else:
         return False
+
 mydb = mysql.connector.connect(
  host="db4free.net" ,
- user="mohamedshaalan",
- password="dbpassword",
+ user= "mohamedshaalan",
+ password= "dbpassword",
  database= "olxproject"
 )
 mycursor = mydb.cursor()
@@ -517,15 +481,15 @@ while quit == False:
             quit = True
     elif choice == "7":
         sql = """
-        	SELECT Owner_Name, Owner_Phone_Number, Car_Year, Count(*), AVG(Price)
+        	SELECT Owner_Name, Owner_Phone_Number, Count(*), AVG(Price)
             FROM ad 
-            GROUP BY 1, 2, 3 
+            GROUP BY 1, 2 
             ORDER BY Count(*) DESC LIMIT 5;
         """
         mycursor.execute(sql)
         result = mycursor.fetchall()
         table = PrettyTable()
-        table.field_names = ["Owner Name", "Owner Phone Number", "Car Year", "Count", "Average Price"]
+        table.field_names = ["Owner Name", "Owner Phone Number", "Count", "Average Price"]
         for r in result:
             table.add_row(r)
         print(table)
@@ -560,12 +524,13 @@ while quit == False:
             mycursor.execute(sql)
             result = mycursor.fetchall()
         sql = f"""
-            SELECT * FROM ad WHERE Owner_Phone_Number='{seller_phone}' AND Owner_Name='{seller_name}' ;
+            SELECT ad.ID, ad.Car_Brand, ad.Car_Model, ad.Car_Year, ad.Color, ad.Minimum_Kilometers, ad.Maximum_Kilometers, ad.Car_Condition, ad.Car_Transmission_Type, ad.Fuel_Type, ad.Location, ad.Price_Type, ad.Price
+            FROM ad WHERE Owner_Phone_Number='{seller_phone}' AND Owner_Name='{seller_name}' ;
         """
         mycursor.execute(sql)
         result = mycursor.fetchall()
         table = PrettyTable()
-        table.field_names = ["ID", "Car Brand", "Car Model", "Car Year", "Color", "Minimum Kilometers", "Maximum Kilometers", "Car Condition", "Car Transmission Type", "Fuel Type", "Location", "Price Type", "Price"]
+        table.field_names = ["ID", "Brand", "Model", "Year", "Color", "Min Kilometers", "Max Kilometers", "Condition", "Transmission", "Fuel", "Location", "Price Type", "Price"]
         for r in result:
             table.add_row(r)
         print(table)
